@@ -1,3 +1,4 @@
+'use strict';
 import path from 'path';
 import fs from 'fs';
 import csv from 'csvtojson';
@@ -12,7 +13,7 @@ const csvConfig = {
         amount: 'omit'
     },
     checkType: true
-}
+};
 
 function logError(error, comment) {
     const message = comment || 'Error occured';
@@ -22,7 +23,7 @@ function logError(error, comment) {
 function convert(inputPath) {
     const inputFileName = path.basename(inputPath);
     const outputFileName = inputFileName.replace(/.\w+$/i, '');
-    const outputPath = path.join(outputDir, `${outputFileName}.txt`)
+    const outputPath = path.join(outputDir, `${outputFileName}.txt`);
 
     pipeline(
         fs.createReadStream(inputPath),

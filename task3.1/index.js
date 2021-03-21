@@ -1,3 +1,4 @@
+'use strict';
 const { stdin, stdout } = process;
 
 stdout.write('input value: ');

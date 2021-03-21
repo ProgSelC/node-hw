@@ -2,7 +2,6 @@
 const path = require('path');
 const fs = require('fs');
 const csv = require('csvtojson');
-const { pipeline } = require('stream');
 
 const inputDir = path.resolve(__dirname, 'csv');
 const outputDir = path.resolve(__dirname, 'converted');
@@ -25,18 +24,27 @@ function convert(inputPath) {
     const outputFileName = inputFileName.replace(/.\w+$/i, '');
     const outputPath = path.join(outputDir, `${outputFileName}.txt`);
 
-    pipeline(
-        fs.createReadStream(inputPath),
-        csv(csvConfig),
-        fs.createWriteStream(outputPath),
-        (error) => {
-            if (error) {
-                logError(error, `Error occured while processing ${inputFileName}`);
-            } else {
-                console.log(`${inputFileName} processed.`);
-            }
+    fs.readFile(inputPath, (error, data) => {
+        if (error) {
+            logError(error, `Error occured while reading file ${inputFileName}`);
         }
-    );
+
+        let converted = '';
+
+        csv(csvConfig)
+            .fromString(data.toString())
+            .subscribe(
+                (line) => converted += `${JSON.stringify(line)}\n`,
+                error => logError(error, `Error occured while converting`),
+                () => fs.writeFile(outputPath, converted, (error) => {
+                    if (error) {
+                        logError(error, `Error occured while writing ${inputFileName}`);
+                    } else {
+                        console.log(`${inputFileName} processed.`);
+                    }
+                })
+            );
+    });
 }
 
 if (!fs.existsSync(outputDir)) {

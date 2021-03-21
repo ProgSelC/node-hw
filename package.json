@@ -6,6 +6,7 @@
     "scripts": {
         "task1": "nodemon task1",
         "task2": "nodemon task2",
+        "task2full": "nodemon task2/read-full.js",
         "task31": "nodemon --exec babel-node task3.1",
         "task32": "nodemon --exec babel-node task3.2"
     },
