@@ -1,0 +1,236 @@
+export default {
+  "swagger": "2.0",
+  "info": {
+    "title": "Users API",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3000",
+  "basePath": "/users",
+  "schemes": [
+    "http"
+  ],
+  "definitions": {
+    "UserRequest": {
+      "properties": {
+        "login": {
+          "type": "string",
+          "minLength": 3,
+          "example": "Vasili"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 5,
+          "format": "password",
+          "example": "abc123"
+        },
+        "age": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 130,
+          "example": 20
+        }
+      },
+      "required": [
+        "login",
+        "password",
+        "age"
+      ]
+    },
+    "UserResponse": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "login": {
+          "type": "string",
+          "minLength": 3,
+          "example": "Vasili"
+        },
+        "password": {
+          "type": "string",
+          "minLength": 5,
+          "format": "password",
+          "example": "abc123"
+        },
+        "age": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 130,
+          "example": 20
+        }
+      },
+      "required": [
+        "login",
+        "password",
+        "age"
+      ]
+    }
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Returns a list of users.",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserResponse"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a user record",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "user",
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      }
+    },
+    "/{userId}": {
+      "get": {
+        "summary": "Returns a user by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "description": "user ID in UUID format"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates user by ID",
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/UserResponse"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Removes user by ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "description": "user ID in UUID format"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "The source was deleted successfully",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "/suggest": {
+      "get": {
+        "summary": "Returns user name suggestions",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "loginSubstring",
+            "required": true,
+            "type": "string",
+            "description": "Substring for suggestions"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "type": "integer",
+            "description": "Limit of suggestions to return"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
