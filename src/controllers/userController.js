@@ -1,5 +1,5 @@
-import * as users from '../db/users';
-import { filterWithLimit } from '../utils/arrayUtils';
+const { StatusCodes } = require('http-status-codes');
+const users = require('../services/userService.js');
 
 const getAll = (req, res) => res.json(users.getAll());
 
@@ -13,7 +13,7 @@ const getById = (req, res) => {
 const create = (req, res) => {
     const data = req.body;
 
-    return res.json(users.create(data));
+    return res.status(StatusCodes.CREATED).json(users.create(data));
 };
 
 const update = (req, res) => {
@@ -26,21 +26,15 @@ const update = (req, res) => {
 const setDeleted = (req, res) => {
     const id = req.params.id;
 
-    return res.json(users.setDeleted(id));
+    users.setDeleted(id);
+
+    return res.sendStatus(StatusCodes.NO_CONTENT);
 };
 
 const getAutoSuggestions = (req, res) => {
     const { loginSubstring, limit } = req.query;
 
-    const logins = users.getAll()
-        .map(u => u.login);
-
-    const predicate = (login) => login.toUpperCase().startsWith(loginSubstring.toUpperCase());
-
-    const results = filterWithLimit(logins, predicate, limit)
-        .sort((a, b) => a.localeCompare(b));
-
-    return res.json(results);
+    return res.json(users.getAutoSuggestions(loginSubstring, limit));
 };
 
-export { getAll, getById, create, update, setDeleted, getAutoSuggestions };
+module.exports = { getAll, getById, create, update, setDeleted, getAutoSuggestions };

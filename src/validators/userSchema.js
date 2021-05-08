@@ -1,4 +1,4 @@
-import Joi from 'joi';
+const Joi = require('joi');
 
 const schemas = {
     userPost: Joi.object({
@@ -10,4 +10,4 @@ const schemas = {
     })
 };
 
-export default schemas;
+module.exports = schemas;

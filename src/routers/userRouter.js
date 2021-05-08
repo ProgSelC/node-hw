@@ -1,14 +1,15 @@
-import express from 'express';
-import schemas from '../config/schemas';
-import {
+const express = require('express');
+const { statusCodes } = require('http-status-codes');
+const schemas = require('../validators/userSchema');
+const {
     getAll,
     getById,
     create,
     update,
     setDeleted,
     getAutoSuggestions
-} from '../controllers/userController';
-import { validator } from '../middlewares/validationMiddleware';
+} = require('../controllers/userController');
+const validator = require('../validators/validationMiddleware');
 
 const router = express.Router();
 
@@ -25,4 +26,4 @@ router.route('/:id')
     .put(validator(schemas.userPost), update)
     .delete(setDeleted);
 
-export default router;
+module.exports = router;

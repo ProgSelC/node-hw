@@ -18,4 +18,4 @@ function* filterGenerator(array, condition, maxSize) {
 
 const filterWithLimit = (array, condition, maxSize) => Array.from(filterGenerator(array, condition, maxSize));
 
-export { filterWithLimit };
+module.exports = { filterWithLimit };

@@ -1,15 +1,18 @@
-import express from 'express';
-import swaggerUi from 'swagger-ui-express';
-import userRouter from './routers/userRouter';
-import swaggerDocument from './config/swaggerConfig';
+const express = require('express');
+const swaggerUi = require('swagger-ui-express');
+const userRouter = require('./routers/userRouter');
+const swaggerDocument = require('./config/swaggerConfig.json');
+
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 
-app.use('/users', userRouter);
-app.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});
+app.use('/users', userRouter)
+    .use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
+    .listen(port, () => {
+        console.log(`Example app is listening at http://localhost:${port}`);
+    });
