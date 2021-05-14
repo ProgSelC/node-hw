@@ -1,0 +1,30 @@
+{
+  "name": "node-gmp",
+  "version": "1.0.0",
+  "description": "Node.js GMP tasks",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^9.0.0",
+    "express": "^4.17.1",
+    "http-status-codes": "^2.1.4",
+    "joi": "^17.4.0",
+    "swagger-ui-express": "^4.1.6",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.10",
+    "@babel/node": "^7.13.10",
+    "@babel/preset-env": "^7.13.10",
+    "eslint": "^7.23.0",
+    "nodemon": "^2.0.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github-ProgSelC:ProgSelC/node-hw.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
