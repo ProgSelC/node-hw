@@ -1,40 +1,46 @@
 const { StatusCodes } = require('http-status-codes');
 const users = require('../services/userService.js');
 
-const getAll = (req, res) => res.json(users.getAll());
+const getAll = async (req, res) => res.json(await users.getAll());
 
-const getById = (req, res) => {
+const getById = async (req, res) => {
     const id = req.params.id;
-    const userList = users.getById(id);
+    const user = await users.getById(id);
 
-    return res.json(userList);
+    return res.json(user);
 };
 
-const create = (req, res) => {
+const create = async (req, res) => {
     const data = req.body;
 
-    return res.status(StatusCodes.CREATED).json(users.create(data));
+    await users.create(data)
+
+    return res.sendStatus(StatusCodes.CREATED);
 };
 
-const update = (req, res) => {
+const update = async (req, res) => {
     const id = req.params.id;
     const data = req.body;
 
-    return res.json(users.update(id, data));
-};
-
-const setDeleted = (req, res) => {
-    const id = req.params.id;
-
-    users.setDeleted(id);
+    await users.update(id, data);
 
     return res.sendStatus(StatusCodes.NO_CONTENT);
 };
 
-const getAutoSuggestions = (req, res) => {
+const setDeleted = async (req, res) => {
+    const id = req.params.id;
+
+    await users.setDeleted(id);
+
+    return res.sendStatus(StatusCodes.NO_CONTENT);
+};
+
+const getAutoSuggestions = async (req, res) => {
     const { loginSubstring, limit } = req.query;
 
-    return res.json(users.getAutoSuggestions(loginSubstring, limit));
+    const suggestions = await users.getAutoSuggestions(loginSubstring, limit);
+
+    return res.json(suggestions);
 };
 
 module.exports = { getAll, getById, create, update, setDeleted, getAutoSuggestions };

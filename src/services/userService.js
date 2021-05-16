@@ -1,39 +1,20 @@
-const User = require('./models/user');
 const { filterWithLimit } = require('../utils/arrayUtils');
+const users = require('../data-access/db');
 
+const getAll = () => users.getAll();
 
-const users = [];
-
-const getAll = () => users.filter(u => !u.isDeleted);
-
-const getById = (id) => users.find(u => u.id === id);
+const getById = (id) => users.getById(id);
 
 const create = (data) => {
-    const user = new User(data);
-
-    users.push(user);
-
-    return user;
+    users.create(data);
 };
 
-const update = (id, data) => {
-    const user = getById(id);
-    if (user) {
-        user.update(data);
-    }
-    
-    return user;
-};
+const update = (id, data) => users.update(id, data);
 
-const setDeleted = (id) => {
-    const user = getById(id);
+const setDeleted = (id) => users.update(id, { isDeleted: true });
 
-    if (user) user.setDeleted();
-};
-
-const getAutoSuggestions = (loginSubstring, limit) => {
-    const logins = getAll()
-        .map(u => u.login);
+const getAutoSuggestions = async (loginSubstring, limit) => {
+    const logins = (await users.getAllLogins()).map(u => u.login);
 
     const predicate = (login) => login.toUpperCase().startsWith(loginSubstring.toUpperCase());
 

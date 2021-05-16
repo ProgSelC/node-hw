@@ -1,0 +1,38 @@
+[
+    {
+        "login": "Anna",
+        "password": "pass1",
+        "age": 22,
+        "isDeleted": false
+    },
+    {
+        "login": "Michal",
+        "password": "pass2",
+        "age": 35,
+        "isDeleted": false
+    },
+    {
+        "login": "Alice",
+        "password": "pass3",
+        "age": 27,
+        "isDeleted": false
+    },
+    {
+        "login": "Lisa",
+        "password": "pass4",
+        "age": 34,
+        "isDeleted": false
+    },
+    {
+        "login": "Zoltan",
+        "password": "pass5",
+        "age": 33,
+        "isDeleted": false
+    },
+    {
+        "login": "Margo",
+        "password": "pass6",
+        "age": 35,
+        "isDeleted": false
+    }
+]
