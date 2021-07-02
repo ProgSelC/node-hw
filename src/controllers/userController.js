@@ -1,28 +1,30 @@
 const { StatusCodes } = require('http-status-codes');
-const users = require('../services/userService.js');
+const UserService = require('../services/userService');
 
-const getAll = async (req, res) => res.json(await users.getAll());
+const userService = new UserService();
+
+const getAll = async (req, res) => res.json(await userService.get());
 
 const getById = async (req, res) => {
     const id = req.params.id;
-    const user = await users.getById(id);
+    const user = await userService.get(id);
 
     return res.json(user);
 };
 
 const create = async (req, res) => {
-    const data = req.body;
+    const user = req.body;
 
-    await users.create(data)
+    await userService.add(user)
 
     return res.sendStatus(StatusCodes.CREATED);
 };
 
 const update = async (req, res) => {
     const id = req.params.id;
-    const data = req.body;
+    const user = req.body;
 
-    await users.update(id, data);
+    await userService.update(id, user);
 
     return res.sendStatus(StatusCodes.NO_CONTENT);
 };
@@ -30,7 +32,7 @@ const update = async (req, res) => {
 const setDeleted = async (req, res) => {
     const id = req.params.id;
 
-    await users.setDeleted(id);
+    await userService.delete(id);
 
     return res.sendStatus(StatusCodes.NO_CONTENT);
 };
@@ -38,7 +40,7 @@ const setDeleted = async (req, res) => {
 const getAutoSuggestions = async (req, res) => {
     const { loginSubstring, limit } = req.query;
 
-    const suggestions = await users.getAutoSuggestions(loginSubstring, limit);
+    const suggestions = await userService.getAutoSuggestions(loginSubstring, limit);
 
     return res.json(suggestions);
 };
