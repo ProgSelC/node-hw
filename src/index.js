@@ -3,6 +3,7 @@ const swaggerUi = require('swagger-ui-express');
 const userRouter = require('./routers/userRouter');
 const groupRouter = require('./routers/groupRouter');
 const swaggerDocument = require('./config/swaggerConfig');
+const serviceLogger = require('./middleware/serviceLogger')
 const errorHandler = require('./middleware/errorHandler');
 const { connect } = require('./data-access/connection');
 
@@ -14,6 +15,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(serviceLogger);
 
 app.use('/users', userRouter)
     .use('/groups', groupRouter)
