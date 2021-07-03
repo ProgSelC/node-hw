@@ -1,7 +1,8 @@
 const { Op } = require('sequelize');
+const { GroupModel } = require('../models');
 
 class UserRepository {
-    constructor(model) { 
+    constructor(model) {
         this.model = model;
     }
 
@@ -42,6 +43,19 @@ class UserRepository {
             },
             order: [['login', 'ASC']],
             limit
+        });
+    }
+
+    async getUserByCredentials(login, password) {
+        return await this.model.findOne({
+            where: { login, password },
+            include: {
+                model: GroupModel,
+                attributes: ['name', 'permissions'],
+                through: {
+                    attributes: []
+                }
+            }
         });
     }
 }

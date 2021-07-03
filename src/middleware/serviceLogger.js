@@ -1,6 +1,6 @@
 const logger = require('../config/logger');
 
-const handle = (req, res, next) => {
+const handler = (req, res, next) => {
     logger.info(`${req.method}: ${req.originalUrl}; body=${JSON.stringify(req.body)}`, {
         method: req.method,
         url: req.originalUrl,
@@ -9,4 +9,4 @@ const handle = (req, res, next) => {
     next();
 };
 
-module.exports = handle;
+module.exports = handler;

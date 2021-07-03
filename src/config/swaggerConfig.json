@@ -9,6 +9,13 @@
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-jwt-token"
+    }
+  },
   "definitions": {
     "UserRequest": {
       "properties": {
@@ -138,11 +145,55 @@
     }
   },
   "paths": {
+    "/login": {
+      "post": {
+        "summary": "Authenticates user by credentials",
+        "tags": [
+          "Login"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "credentials",
+            "type": "object",
+            "properties": {
+              "login": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string",
+                "format": "password"
+              }
+            },
+            "example": {
+              "login": "Anna",
+              "password": "pass1"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/users": {
       "get": {
         "summary": "Returns a list of users.",
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "produces": [
           "application/json"
@@ -163,6 +214,11 @@
         "summary": "Creates a user record",
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "consumes": [
           "application/json"
@@ -192,6 +248,11 @@
         "tags": [
           "Users"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -218,6 +279,11 @@
         "summary": "Updates user by ID",
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "consumes": [
           "application/json"
@@ -253,6 +319,11 @@
         "tags": [
           "Users"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -278,6 +349,11 @@
         "summary": "Returns user name suggestions",
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "parameters": [
           {
@@ -317,6 +393,11 @@
         "tags": [
           "Groups"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "produces": [
           "application/json"
         ],
@@ -336,6 +417,11 @@
         "summary": "Creates a group record",
         "tags": [
           "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "consumes": [
           "application/json"
@@ -365,6 +451,11 @@
         "tags": [
           "Groups"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -391,6 +482,11 @@
         "summary": "Updates group by ID",
         "tags": [
           "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "consumes": [
           "application/json"
@@ -426,6 +522,11 @@
         "tags": [
           "Groups"
         ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -451,6 +552,11 @@
         "summary": "Adds list of users to a group by id",
         "tags": [
           "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
         ],
         "parameters": [
           {

@@ -32,6 +32,10 @@ class UserService {
     async getAutoSuggestions(loginSubstring, limit) {
         return await this.userRepository.getAutoSuggestions(loginSubstring, limit);
     }
+
+    async getUserByCredentials(login, password) {
+        return await this.userRepository.getUserByCredentials(login, password);
+    }
 }
 
 module.exports = UserService;
