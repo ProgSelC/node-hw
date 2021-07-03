@@ -1,44 +1,37 @@
-const User = require('./models/user');
-const { filterWithLimit } = require('../utils/arrayUtils');
+const UserRepository = require('../data-access/userRepository');
+const UserModel = require('../models/userModel');
 
-
-const users = [];
-
-const getAll = () => users.filter(u => !u.isDeleted);
-
-const getById = (id) => users.find(u => u.id === id);
-
-const create = (data) => {
-    const user = new User(data);
-
-    users.push(user);
-
-    return user;
-};
-
-const update = (id, data) => {
-    const user = getById(id);
-    if (user) {
-        user.update(data);
+class UserService {
+    constructor() {
+        this.userRepository = new UserRepository(UserModel);
     }
-    
-    return user;
-};
 
-const setDeleted = (id) => {
-    const user = getById(id);
+    async add(user) {
+        user.isDeleted = false;
+        const newUser = await this.userRepository.create(user);
+        return newUser.id;
+    }
 
-    if (user) user.setDeleted();
-};
+    async update(id, updatedUser) {
+        const res = await this.userRepository.update(id, updatedUser);
+        return res;
+    }
 
-const getAutoSuggestions = (loginSubstring, limit) => {
-    const logins = getAll()
-        .map(u => u.login);
+    async delete(id) {
+        return await this.userRepository.delete(id);
+    }
 
-    const predicate = (login) => login.toUpperCase().startsWith(loginSubstring.toUpperCase());
+    async get(id) {
+        if (id) {
+            return await this.userRepository.getById(id);
+        }
 
-    return filterWithLimit(logins, predicate, limit)
-        .sort((a, b) => a.localeCompare(b));
+        return await this.userRepository.getAll();
+    }
+
+    async getAutoSuggestions(loginSubstring, limit) {
+        return await this.userRepository.getAutoSuggestions(loginSubstring, limit);
+    }
 }
 
-module.exports = { getAll, getById, create, update, setDeleted, getAutoSuggestions };
+module.exports = UserService;
