@@ -6,29 +6,27 @@ class UserRepository {
     }
 
     async getById(id) {
-        const user = await this.model.findByPk(id);
-        return user;
+        return await this.model.findByPk(id);
     }
 
     async getAll() {
-        const users = await this.model.findAll({
+        return await this.model.findAll({
             where: { isDeleted: false }
         });
-        return users;
     }
 
-    create(user) {
-        return this.model.create(user);
+    async create(user) {
+        return await this.model.create(user);
     }
 
-    update(id, user) {
-        return this.model.update(user, {
+    async update(id, user) {
+        return await this.model.update(user, {
             where: { id }
         });
     }
 
-    delete(id) {
-        return this.model.update(
+    async delete(id) {
+        return await this.model.update(
             { isDeleted: true },
             {
                 where: { id }
@@ -37,7 +35,7 @@ class UserRepository {
     }
 
     async getAutoSuggestions(loginSubstring, limit) {
-        const users = await this.model.findAll({
+        return await this.model.findAll({
             where: {
                 login: { [Op.iLike]: `${loginSubstring}%` },
                 isDeleted: false
@@ -45,7 +43,6 @@ class UserRepository {
             order: [['login', 'ASC']],
             limit
         });
-        return users;
     }
 }
 

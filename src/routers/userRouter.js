@@ -1,6 +1,6 @@
 const express = require('express');
-const { statusCodes } = require('http-status-codes');
-const schemas = require('../validators/userSchema');
+const { user, newUser } = require('../validators/userSchemas');
+const { uuid } = require('../validators/commonSchemas');
 const {
     getAll,
     getById,
@@ -9,21 +9,19 @@ const {
     setDeleted,
     getAutoSuggestions
 } = require('../controllers/userController');
-const validator = require('../validators/validationMiddleware');
+const validator = require('../validators/validators');
 
 const router = express.Router();
 
-router.use(express.json());
-
 router.route('/')
     .get(getAll)
-    .post(validator(schemas.userPost), create);
+    .post(validator(newUser, 'body'), create);
 
 router.get('/suggest', getAutoSuggestions);
 
 router.route('/:id')
-    .get(getById)
-    .put(validator(schemas.userPost), update)
-    .delete(setDeleted);
+    .get(validator(uuid, 'params'), getById)
+    .put(validator(uuid, 'params'), validator(user, 'body'), update)
+    .delete(validator(uuid, 'params'), setDeleted);
 
 module.exports = router;

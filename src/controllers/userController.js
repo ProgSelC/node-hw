@@ -3,11 +3,11 @@ const UserService = require('../services/userService');
 
 const userService = new UserService();
 
-const getAll = async (req, res) => res.json(await userService.get());
+const getAll = async (req, res) => res.json(await userService.getAll());
 
 const getById = async (req, res) => {
     const id = req.params.id;
-    const user = await userService.get(id);
+    const user = await userService.getById(id);
 
     return res.json(user);
 };

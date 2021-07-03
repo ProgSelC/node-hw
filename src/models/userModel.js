@@ -1,7 +1,8 @@
 const { Model, DataTypes } = require('sequelize');
 const { sequelize } = require('../data-access/connection');
 
-const UserModel = Model.init(
+class UserModel extends Model {}
+UserModel.init(
     {
         id: {
             type: DataTypes.UUID,
@@ -28,7 +29,7 @@ const UserModel = Model.init(
             defaultValue: false
         }
     },
-    { sequelize, modelName: 'user', timestamps: false }
+    { sequelize, modelName: 'users', timestamps: false }
 );
 
 module.exports = UserModel;
