@@ -5,10 +5,17 @@
     "version": "1.0.0"
   },
   "host": "localhost:3000",
-  "basePath": "/users",
+  "basePath": "/",
   "schemes": [
     "http"
   ],
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "x-jwt-token"
+    }
+  },
   "definitions": {
     "UserRequest": {
       "properties": {
@@ -65,12 +72,129 @@
         "password",
         "age"
       ]
+    },
+    "GroupRequest": {
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "example": "Moderator"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true,
+          "example": [
+            "CREATE"
+          ]
+        }
+      }
+    },
+    "GroupResponse": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "name": {
+          "type": "string"
+        },
+        "permissions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "name": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "UserGroupRequest": {
+      "properties": {
+        "groupId": {
+          "type": "string",
+          "format": "uuid",
+          "example": "dcc4db83-a96c-4f9e-b0a4-62bbac4361ba"
+        },
+        "userIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "example": [
+            "2dd3946c-39c2-4e31-9d0c-2c9c7be21811"
+          ]
+        }
+      }
     }
   },
   "paths": {
-    "/": {
+    "/login": {
+      "post": {
+        "summary": "Authenticates user by credentials",
+        "tags": [
+          "Login"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "credentials",
+            "type": "object",
+            "properties": {
+              "login": {
+                "type": "string"
+              },
+              "password": {
+                "type": "string",
+                "format": "password"
+              }
+            },
+            "example": {
+              "login": "Anna",
+              "password": "pass1"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/users": {
       "get": {
         "summary": "Returns a list of users.",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "produces": [
           "application/json"
         ],
@@ -88,6 +212,14 @@
       },
       "post": {
         "summary": "Creates a user record",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "consumes": [
           "application/json"
         ],
@@ -105,17 +237,22 @@
         ],
         "responses": {
           "201": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/UserResponse"
-            }
+            "description": "OK"
           }
         }
       }
     },
-    "/{userId}": {
+    "/users/{userId}": {
       "get": {
         "summary": "Returns a user by ID",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -140,6 +277,14 @@
       },
       "put": {
         "summary": "Updates user by ID",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "consumes": [
           "application/json"
         ],
@@ -165,15 +310,20 @@
         ],
         "responses": {
           "200": {
-            "description": "OK",
-            "schema": {
-              "$ref": "#/definitions/UserResponse"
-            }
+            "description": "OK"
           }
         }
       },
       "delete": {
         "summary": "Removes user by ID",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
@@ -194,9 +344,17 @@
         }
       }
     },
-    "/suggest": {
+    "/users/suggest": {
       "get": {
         "summary": "Returns user name suggestions",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
         "parameters": [
           {
             "in": "query",
@@ -225,6 +383,196 @@
                 "type": "string"
               }
             }
+          }
+        }
+      }
+    },
+    "/groups": {
+      "get": {
+        "summary": "Returns a list of groups.",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/GroupResponse"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a group record",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "group",
+            "schema": {
+              "$ref": "#/definitions/GroupRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/groups/{groupId}": {
+      "get": {
+        "summary": "Returns a user by ID",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "description": "group ID in UUID format"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/GroupResponse"
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates group by ID",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "required": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          {
+            "in": "body",
+            "name": "group",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/GroupRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Removes group by ID",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "groupId",
+            "required": true,
+            "type": "string",
+            "format": "uuid",
+            "description": "group ID in UUID format"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "204": {
+            "description": "The source was deleted successfully"
+          }
+        }
+      }
+    },
+    "/groups/add_users": {
+      "post": {
+        "summary": "Adds list of users to a group by id",
+        "tags": [
+          "Groups"
+        ],
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "group",
+            "schema": {
+              "$ref": "#/definitions/UserGroupRequest"
+            }
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
           }
         }
       }
